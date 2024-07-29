@@ -1,0 +1,27 @@
+{
+  "name": "vue-ts",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "rsbuild build",
+    "watch": "rsbuild build --watch",
+    "preview": "rsbuild preview",
+    "dev": "kintone-uploader-env && run-p watch preview",
+    "update": "rsbuild build && kintone-uploader-env",
+    "update:prod": "rsbuild build && kintone-uploader-env -e .env.prod -m mainfests/prod.json"
+  },
+  "dependencies": {
+    "vue": "^3.4.19"
+  },
+  "devDependencies": {
+    "@kintone/customize-uploader": "^8.0.13",
+    "@kintone/dts-gen": "^8.0.12",
+    "@rsbuild/core": "1.0.1-beta.5",
+    "@rsbuild/plugin-vue": "1.0.1-beta.5",
+    "kchelper": "^1.2.2",
+    "kintone-dev-tools": "^1.0.9",
+    "kintone-uploader-env": "^1.2.1",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.5.2"
+  }
+}

@@ -31,7 +31,7 @@ export const askQuestions = async () => {
       choices: [
         { name: chalk.green('Vue'), value: 'vue' },
         { name: chalk.cyan('React'), value: 'react' },
-        { name: chalk.magenta('No framework'), value: 'none' }
+        { name: chalk.magenta('Vanilla'), value: 'vanilla' }
       ],
       message: 'Select framework:'
     },

@@ -1,14 +1,12 @@
 {
-  "name": "none-ts",
+  "name": "vanilla-ts",
   "private": true,
   "version": "1.0.0",
   "scripts": {
     "build": "rsbuild build",
-    "watch": "rsbuild build --watch",
-    "preview": "rsbuild preview",
-    "dev": "kintone-uploader-env && run-p watch preview",
-    "update": "rsbuild build && kintone-uploader-env",
-    "update:prod": "rsbuild build && kintone-uploader-env -e .env.prod -m mainfests/prod.json"
+    "dev": "kintone-uploader-env && rsbuild dev",
+    "update:dev": "rsbuild build && kintone-uploader-env -m mainfests/dev-up.json",
+    "update:prod": "rsbuild build --env-mode prod && kintone-uploader-env -e .env.prod -m mainfests/prod.json"
   },
   "devDependencies": {
     "@kintone/customize-uploader": "^8.0.13",

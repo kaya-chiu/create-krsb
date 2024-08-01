@@ -33,7 +33,7 @@ Watch for changes during development:
 ${chalk.yellow(`${npm$pnpm} run dev`)}
 
 Update customizations to development environment:
-${chalk.yellow(`${npm$pnpm} run update`)}
+${chalk.yellow(`${npm$pnpm} run update:dev`)}
 
 Update customizations to production environment:
 ${chalk.yellow(`${npm$pnpm} run update:prod`)}

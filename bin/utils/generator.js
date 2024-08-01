@@ -116,6 +116,11 @@ export const generateTemplate = async answer => {
       value: appId || '',
       targetFilePath: `${targetPath}/mainfests/dev.json`
     })
+    editJsonFile({
+      key: 'app',
+      value: appId || '',
+      targetFilePath: `${targetPath}/mainfests/dev-up.json`
+    })
     
     if (!needInformationProd) return
     editJsonFile({

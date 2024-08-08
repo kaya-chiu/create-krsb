@@ -1,6 +1,6 @@
 {
   "name": "create-krsb",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A development tool for building kintone customization projects based on Rsbuild.",
   "main": "index.js",
   "type": "module",

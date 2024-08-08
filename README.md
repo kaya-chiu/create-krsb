@@ -18,4 +18,4 @@ npm create krsb@latest
 You can choose from the following frameworks:
 - **Vue**
 - **React**
-- JavaScript/TypeScript only - without frameworks
+- Vanilla (without frameworks)

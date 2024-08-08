@@ -17,7 +17,7 @@ export default defineConfig({
   },
   dev: {
     hmr: false,
-    liveReload: true,
+    liveReload: false,
   },
   output: {
     distPath: {

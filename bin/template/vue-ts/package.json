@@ -16,10 +16,9 @@
     "@kintone/dts-gen": "^8.0.12",
     "@rsbuild/core": "1.0.1-beta.5",
     "@rsbuild/plugin-vue": "1.0.1-beta.5",
+    "@rsbuild/plugin-basic-ssl": "^1.1.1",
     "kchelper": "^1.2.2",
-    "kintone-dev-tools": "^1.0.9",
     "kintone-uploader-env": "^1.2.1",
-    "npm-run-all": "^4.1.5",
     "typescript": "^5.5.2"
   }
 }

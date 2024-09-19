@@ -1,20 +1,12 @@
 import { defineConfig } from '@rsbuild/core'
 import { pluginVue } from '@rsbuild/plugin-vue'
-import { cert } from 'kintone-dev-tools'
-
-const tls = cert.certificateFor(['localhost'])
+import { pluginBasicSsl } from '@rsbuild/plugin-basic-ssl'
 
 export default defineConfig({
-  plugins: [pluginVue()],
-  server: {
-    https: {
-      key: tls.private,
-      cert: tls.cert
-    },
-  },
+  plugins: [pluginVue(), pluginBasicSsl()],
   performance: {
     chunkSplit: {
-      strategy: "all-in-one",
+      strategy: 'all-in-one',
     },
   },
   dev: {
@@ -22,11 +14,12 @@ export default defineConfig({
     liveReload: false,
   },
   output: {
+    injectStyles: true,
     distPath: {
       js: './',
     },
     filename: {
-      js: 'app.js'
-    }
-  }
+      js: 'app.js',
+    },
+  },
 })

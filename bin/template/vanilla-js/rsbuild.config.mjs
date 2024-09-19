@@ -1,18 +1,11 @@
 import { defineConfig } from '@rsbuild/core'
-import { cert } from 'kintone-dev-tools'
-
-const tls = cert.certificateFor(['localhost'])
+import { pluginBasicSsl } from '@rsbuild/plugin-basic-ssl'
 
 export default defineConfig({
-  server: {
-    https: {
-      key: tls.private,
-      cert: tls.cert
-    },
-  },
+  plugins: [pluginBasicSsl()],
   performance: {
     chunkSplit: {
-      strategy: "all-in-one",
+      strategy: 'all-in-one',
     },
   },
   dev: {
@@ -20,11 +13,12 @@ export default defineConfig({
     liveReload: false,
   },
   output: {
+    injectStyles: true,
     distPath: {
       js: './',
     },
     filename: {
-      js: 'app.js'
-    }
-  }
+      js: 'app.js',
+    },
+  },
 })

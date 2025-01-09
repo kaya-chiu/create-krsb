@@ -1,18 +1,19 @@
 {
   "name": "vanilla-js",
-  "private": true,
   "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
     "build": "rsbuild build",
     "dev": "kintone-uploader-env && rsbuild dev",
-    "update:dev": "rsbuild build && kintone-uploader-env -m mainfests/dev-up.json",
+    "update:dev": "rsbuild build && kintone-uploader-env -m mainfests/prod.json",
     "update:prod": "rsbuild build --env-mode prod && kintone-uploader-env -e .env.prod -m mainfests/prod.json"
   },
+  "dependencies": {},
   "devDependencies": {
-    "@kintone/customize-uploader": "^8.0.13",
-    "@rsbuild/core": "1.0.1-beta.5",
+    "@rsbuild/core": "^1.1.13",
     "@rsbuild/plugin-basic-ssl": "^1.1.1",
-    "kchelper": "^1.2.2",
-    "kintone-uploader-env": "^1.2.1"
+    "@kintone/customize-uploader": "^8.0.13",
+    "kintone-uploader-env": "^1.4.1"
   }
 }

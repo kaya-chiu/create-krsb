@@ -13,8 +13,7 @@
     "allowImportingTsExtensions": true
   },
   "files" : [
-    "./node_modules/@kintone/dts-gen/kintone.d.ts",
-    "./node_modules/kchelper/kchelper.d.ts"
+    "./node_modules/@kintone/dts-gen/kintone.d.ts"
   ],
   "include": ["src"]
 }

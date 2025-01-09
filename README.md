@@ -16,6 +16,6 @@ npm create krsb@latest
 
 ## Available Frameworks:
 You can choose from the following frameworks:
-- **Vue**
-- **React**
+- Vue
+- React
 - Vanilla (without frameworks)

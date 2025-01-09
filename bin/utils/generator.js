@@ -1,26 +1,39 @@
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { exec } from 'child_process'
 import ncp from 'ncp'
+import { dependenciesMap, packageJson, gitignoreContent } from './config.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const currentPath = process.cwd()
 
-const copyTemplateFiles = (framework, language, projectName, cb) => {
+// 確保目錄存在
+const ensureDirectoryExists = (dir) => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true })
+  }
+}
+
+// 複製模板檔案
+const copyTemplateFiles = (framework, language, projectName) => {
   const sourcePath = path.resolve(__dirname, `../template/${framework}-${language}`)
   const targetPath = path.join(currentPath, projectName)
 
-  ncp(sourcePath, targetPath, err => {
-    if (err) {
-      console.error('Error copying files:', err)
-    }
-    else {
-      cb()
-    }
+  return new Promise((resolve, reject) => {
+    ncp(sourcePath, targetPath, err => {
+      if (err) {
+        console.error('Error copying files:', err)
+        reject(err)
+      } else {
+        resolve()
+      }
+    })
   })
 }
 
+// 生成 .env 和 .env.prod
 const createEnv = (answer) => {
   const { 
     projectName, baseURL, userName, password, appId, sameAsDev,
@@ -41,92 +54,63 @@ APP_ID=${prodAppId || ''}
 `
 
   const targetPath = path.join(currentPath, projectName)
-  const envPath = path.join(targetPath, '.env')
-  const prodEnvPath = path.join(targetPath, '.env.prod')
+  ensureDirectoryExists(targetPath)
 
-  fs.writeFileSync(envPath, envContent)
-  fs.writeFileSync(prodEnvPath, prodEnvContent)
+  fs.writeFileSync(path.join(targetPath, '.env'), envContent)
+  fs.writeFileSync(path.join(targetPath, '.env.prod'), prodEnvContent)
 }
 
-const createGitignore = answer => {
-  const { projectName } = answer
-  const content = `# Local
-.DS_Store
-*.local
-*.log*
-.env
-.env.*
-
-# Dist
-node_modules
-dist/
-
-# IDE
-.vscode/*
-!.vscode/extensions.json
-.idea
-`
+// 生成 .gitignore
+const createGitignore = (projectName) => {
   const targetPath = path.join(currentPath, projectName)
-  const gitignorePath = path.join(targetPath, '/.gitignore')
-
-  fs.writeFileSync(gitignorePath, content)
+  ensureDirectoryExists(targetPath)
+  fs.writeFileSync(path.join(targetPath, '/.gitignore'), gitignoreContent)
 }
 
-const editJsonFile = data => {
-  const { key, value, targetFilePath } = data
-
-  fs.readFile(targetFilePath, 'utf8', (err, data) => {
-    if (err) {
-      console.error('Failed to read file:', err)
-      return
-    }
-
-    const jsonObject = JSON.parse(data)
-    jsonObject[key] = value
-    const updatedJsonString = JSON.stringify(jsonObject, null, 2)
-    fs.writeFile(targetFilePath, updatedJsonString, (err) => {
-      if (err) {
-        console.error('Failed to write file:', err)
-        return
+// 動態生成 package.json
+const getLatestVersion = (pkg) => {
+  return new Promise((resolve, reject) => {
+    exec(`npm show ${pkg} version`, (error, stdout) => {
+      if (error) {
+        console.error(`Failed to fetch version for ${pkg}:`, error.message)
+        resolve('latest') // 默認返回 'latest'
+      } else {
+        resolve(stdout.trim())
       }
     })
   })
 }
 
-export const generateTemplate = async answer => {
-  const { 
-    projectName, framework, language, appId, sameAsDev,
-    needInformation, needInformationProd, prodAppId 
-  } = answer
+const createPackageJson = async (projectName, framework, language, targetPath) => {
+  const key = `${framework}_${language}`
+  const dependencies = [...dependenciesMap.basic.dependencies, ...dependenciesMap[key].dependencies]
+  const devDependencies = [...dependenciesMap.basic.devDependencies, ...dependenciesMap[key].devDependencies]
+
+  packageJson.name = projectName
+
+  for (const pkg of dependencies) {
+    packageJson.dependencies[pkg] = `^${await getLatestVersion(pkg)}`
+  }
+  for (const pkg of devDependencies) {
+    packageJson.devDependencies[pkg] = `^${await getLatestVersion(pkg)}`
+  }
+
+  fs.writeFileSync(path.join(targetPath, 'package.json'), JSON.stringify(packageJson, null, 2))
+}
+
+// 主生成函式
+export const generateTemplate = async (answer) => {
+  const { projectName, framework, language } = answer
   
-  copyTemplateFiles(framework, language, projectName, () => {
+  try {
+    await copyTemplateFiles(framework, language, projectName)
     const targetPath = path.join(currentPath, projectName)
 
-    editJsonFile({
-      key: 'name',
-      value: projectName,
-      targetFilePath: `${targetPath}/package.json`
-    })
+    await createPackageJson(projectName, framework, language, targetPath)
     createEnv(answer)
-    createGitignore(answer)
-    
-    if (!needInformation) return
-    editJsonFile({
-      key: 'app',
-      value: appId || '',
-      targetFilePath: `${targetPath}/mainfests/dev.json`
-    })
-    editJsonFile({
-      key: 'app',
-      value: appId || '',
-      targetFilePath: `${targetPath}/mainfests/dev-up.json`
-    })
-    
-    if (!needInformationProd) return
-    editJsonFile({
-      key: 'app',
-      value: sameAsDev ? (appId || '') : (prodAppId || ''),
-      targetFilePath: `${targetPath}/mainfests/prod.json`
-    })
-  })
+    createGitignore(projectName)
+
+  } catch (err) {
+    console.error('Generate template failed:', err)
+  }
 }

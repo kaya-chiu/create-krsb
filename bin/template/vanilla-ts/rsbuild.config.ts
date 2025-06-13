@@ -20,5 +20,6 @@ export default defineConfig({
     filename: {
       js: 'app.js',
     },
+    legalComments: 'inline',
   },
 })
